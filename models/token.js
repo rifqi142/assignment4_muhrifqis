@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class user extends Model {
+  class token extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,70 +9,50 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-
-      // relasi many to many ke tabel courses
-      // relasi many to many ke tabel user
-      // satu user bisa mempunyai banyak course
-      models.user.belongsToMany(models.courses, {
-        through: models.users_courses,
-        foreignKey: "uc_us_id",
-        otherKey: "uc_cr_id",
-        as: "enrolledCourses",
-      });
     }
   }
-  user.init(
+  token.init(
     {
-      us_id: {
+      tkn_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false,
       },
-      us_username: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      us_fullname: {
+      tkn_type: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      us_email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      us_phone_number: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      us_password: {
+      tkn_value: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      us_is_active: {
+      tkn_description: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      tkn_expired_on: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+      tkn_is_active: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: true,
       },
-      us_created_at: {
+      tkn_created_at: {
         type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW,
       },
-      us_updated_at: {
+      tkn_updated_at: {
         type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW,
       },
     },
     {
       sequelize,
-      modelName: "user",
-      tableName: "users",
+      modelName: "token",
+      tableName: "tokens",
+      timestamps: false,
     }
   );
-  return user;
+  return token;
 };

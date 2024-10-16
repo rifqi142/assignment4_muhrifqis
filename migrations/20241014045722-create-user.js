@@ -12,6 +12,7 @@ module.exports = {
       us_username: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true,
       },
       us_fullname: {
         type: Sequelize.STRING,
@@ -20,6 +21,21 @@ module.exports = {
       us_email: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true,
+      },
+      us_phone_number: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      us_password: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      us_is_active: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
       },
       us_created_at: {
         type: Sequelize.DATE,

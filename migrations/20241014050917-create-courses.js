@@ -21,6 +21,23 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: false,
       },
+      cr_price: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      cr_duration: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      cr_category: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      cr_is_active: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+      },
       cr_created_at: {
         type: Sequelize.DATE,
         allowNull: false,

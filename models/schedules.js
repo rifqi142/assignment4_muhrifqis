@@ -51,6 +51,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TIME,
         allowNull: false,
       },
+      sc_is_done: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      sc_is_active: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+      },
       sc_created_at: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -65,6 +75,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "schedules",
+      tableName: "schedules",
     }
   );
   return schedules;

@@ -8,11 +8,22 @@ const cors = require("cors");
 const port = process.env.PORT || 3000;
 
 const courseRoutes = require("@routes/course");
+const authRoutes = require("@routes/auth");
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(bodyParser.json());
 
 app.use("/course", courseRoutes);
+
+// localhost:3000/course/auth/register -> untuk register
+// localhost:3000/course/auth/login -> untuk login
+app.use("/auth", authRoutes);
 
 app.get("/", (_, res) => {
   res.status(200).json({
