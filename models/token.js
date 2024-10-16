@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      tkn_us_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       tkn_expired_on: {
         type: DataTypes.DATE,
         allowNull: false,
