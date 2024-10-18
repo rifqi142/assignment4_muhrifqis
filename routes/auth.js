@@ -5,10 +5,11 @@ const {
   authBodyValidation,
   authCheckDuplicate,
 } = require("@/controllers/validation/auth");
-const { authRegister, authLogin } = require("@/controllers/auth");
+const { authRegister, authLogin, authLogout } = require("@/controllers/auth");
 
 router.post("/register", authBodyValidation, authCheckDuplicate, authRegister);
 router.post("/login", authLogin);
+router.post("/logout", authLogout);
 
 router.get("/get-users", async (req, res) => {
   try {

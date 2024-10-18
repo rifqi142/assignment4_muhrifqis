@@ -21,6 +21,10 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: false,
       },
+      cr_trainer: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       cr_price: {
         type: Sequelize.INTEGER,
         allowNull: false,

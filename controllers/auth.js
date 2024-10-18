@@ -162,7 +162,46 @@ const authLogin = async (req, res) => {
   }
 };
 
+const authLogout = async (req, res) => {
+  try {
+    if (req.cookies.user) {
+      const { token } = JSON.parse(req.cookies.user);
+
+      if (token) {
+        await token.update(
+          {
+            tkn_is_active: false,
+          },
+          {
+            where: {
+              tkn_value: token,
+            },
+          }
+        );
+      }
+    }
+
+    // clear cookie
+    res.clearCookie("user", {
+      httpOnly: false,
+    });
+
+    return res.status(200).json({
+      status: "success",
+      code: 200,
+      message: "Logout successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "failed",
+      code: 500,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   authRegister,
   authLogin,
+  authLogout,
 };

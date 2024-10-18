@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
 
       // A course can have many schedules
       // relasi one to many ke tabel schedules
-      models.courses.hasMany(models.schedules, {
+      models.courses.belongsToMany(models.schedules, {
         through: models.courses_schedules,
         foreignKey: "sc_cr_id",
         as: "schedules",

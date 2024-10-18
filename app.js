@@ -7,8 +7,12 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const port = process.env.PORT || 3000;
 
-const courseRoutes = require("@routes/course");
-const authRoutes = require("@routes/auth");
+const authRoutes = require("@/routes/auth");
+const courseRoutes = require("@/routes/course");
+const scheduleRoutes = require("@/routes/schedule");
+const courseScheduleRoutes = require("@/routes/courseSchedule");
+const userCoursesRoutes = require("@/routes/userCourse");
+const userRoutes = require("@/routes/user");
 
 app.use(
   cors({
@@ -19,11 +23,12 @@ app.use(
 );
 app.use(bodyParser.json());
 
-app.use("/course", courseRoutes);
-
-// localhost:3000/course/auth/register -> untuk register
-// localhost:3000/course/auth/login -> untuk login
 app.use("/auth", authRoutes);
+app.use("/course", courseRoutes);
+app.use("/schedule", scheduleRoutes);
+app.use("/user-course", userCoursesRoutes);
+app.use("/course-schedule", courseScheduleRoutes);
+app.use("/user", userRoutes);
 
 app.get("/", (_, res) => {
   res.status(200).json({

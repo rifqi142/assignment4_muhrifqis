@@ -51,11 +51,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TIME,
         allowNull: false,
       },
-      sc_is_done: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
-      },
       sc_is_active: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
