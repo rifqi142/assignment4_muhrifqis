@@ -23,7 +23,7 @@ const authBodyValidation = (req, res, next) => {
 };
 
 const authCheckDuplicate = async (req, res, next) => {
-  const { us_email, us_phone_number, username } = req.body;
+  const { us_email, us_phone_number, us_username } = req.body;
   try {
     const userByEmail = await user.findOne({
       where: {
@@ -49,7 +49,7 @@ const authCheckDuplicate = async (req, res, next) => {
 
     const userByUsername = await user.findOne({
       where: {
-        us_username: username,
+        us_username,
       },
     });
     if (userByUsername) {

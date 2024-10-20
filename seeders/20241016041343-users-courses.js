@@ -17,21 +17,29 @@ module.exports = {
         // user dengan id 1 mengambil matkul web development
         uc_us_id: 1,
         uc_cr_id: 1,
+        uc_created_at: new Date(),
+        uc_updated_at: new Date(),
       },
       {
         // user dengan id 1 mengambil matkul mobile development
         uc_us_id: 1,
         uc_cr_id: 2,
+        uc_created_at: new Date(),
+        uc_updated_at: new Date(),
       },
       {
         // user dengan id 2 mengambil matkul data science
         uc_us_id: 2,
         uc_cr_id: 3,
+        uc_created_at: new Date(),
+        uc_updated_at: new Date(),
       },
       {
         // user dengan id 2 mengambil matkul machine learning
         uc_us_id: 2,
         uc_cr_id: 4,
+        uc_created_at: new Date(),
+        uc_updated_at: new Date(),
       },
     ]);
   },

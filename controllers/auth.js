@@ -8,6 +8,9 @@ const authRegister = async (req, res) => {
   try {
     const { us_username, us_fullname, us_email, us_phone_number, us_password } =
       req.body;
+
+    console.log("req body", req.body);
+
     if (
       !us_username ||
       !us_fullname ||
@@ -20,35 +23,46 @@ const authRegister = async (req, res) => {
       });
     }
 
-    // create new user
+    const us_created_at = new Date();
+    const us_updated_at = new Date();
+
+    const hashedPassword = await bcrypt.hash(us_password, 10);
+
+    // Create a new user
     const newUser = await user.create({
       us_username,
       us_fullname,
       us_email,
       us_phone_number,
-      us_password: bcrypt.hashSync(us_password, 10),
+      us_password: hashedPassword,
+      us_is_active: true,
+      us_created_at,
+      us_updated_at,
     });
 
-    // generate token
+    console.log("New user created:", newUser);
+
+    // Generate token
     const tokenValue = generateToken(
       newUser.us_id,
       newUser.us_email,
       newUser.us_fullname,
-      "REGISTER_TOKEN",
       "1h"
     );
 
-    // save token
+    // Save the token
     await token.create({
       tkn_value: tokenValue,
       tkn_type: "REGISTER_TOKEN",
-      tkn_description: `Successfully crate token user for ${newUser.us_email}`,
+      tkn_description: `Successfully created token for user ${newUser.us_email}`,
       tkn_us_id: newUser.us_id,
-      tkn_expired_on: new Date(new Date().getTime() + 60 * 60 * 1000), //   expired token 1hour
+      tkn_expired_on: new Date(new Date().getTime() + 60 * 60 * 1000), // Token expires in 1 hour
       tkn_is_active: true,
+      tkn_created_at: new Date(),
+      tkn_updated_at: new Date(),
     });
 
-    // remove password from response
+    // Remove password from the response
     delete newUser.dataValues.us_password;
 
     return res.status(201).json({
@@ -60,7 +74,7 @@ const authRegister = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       status: "failed",
-      code: "500",
+      code: 500,
       message: error.message,
     });
   }
@@ -68,27 +82,17 @@ const authRegister = async (req, res) => {
 
 const authLogin = async (req, res) => {
   try {
-    const { input, password } = req.body;
-    if (!input || !password) {
-      return res.status(400).json({
-        message: "Please fill all fields",
-      });
-    }
+    const { input, us_password } = req.body;
 
-    const user = await user.findOne({
+    const foundUser = await user.findOne({
       where: {
         [Op.or]: [
           { us_username: input },
-          {
-            us_email: input,
-          },
-          {
-            us_phone_number: input,
-          },
+          { us_email: input },
+          { us_phone_number: input },
         ],
       },
-
-      attribute: [
+      attributes: [
         "us_id",
         "us_username",
         "us_fullname",
@@ -99,7 +103,7 @@ const authLogin = async (req, res) => {
       ],
     });
 
-    if (!user) {
+    if (!foundUser) {
       return res.status(404).json({
         status: "failed",
         code: 404,
@@ -107,7 +111,10 @@ const authLogin = async (req, res) => {
       });
     }
 
-    const isPasswordMatch = bcrypt.compareSync(password, user.us_password);
+    const isPasswordMatch = await bcrypt.compare(
+      us_password,
+      foundUser.us_password
+    );
     if (!isPasswordMatch) {
       return res.status(401).json({
         status: "failed",
@@ -118,10 +125,9 @@ const authLogin = async (req, res) => {
 
     // generate token for login
     const loginToken = generateToken(
-      user.us_id,
-      user.us_email,
-      user.us_fullname,
-      "LOGIN_TOKEN",
+      foundUser.us_id,
+      foundUser.us_email,
+      foundUser.us_fullname,
       "1h"
     );
 
@@ -129,17 +135,17 @@ const authLogin = async (req, res) => {
     await token.create({
       tkn_value: loginToken,
       tkn_type: "LOGIN_TOKEN",
-      tkn_description: `Successfully create token user for ${user.us_email}`,
-      tkn_us_id: user.us_id,
-      tkn_expired_on: new Date(new Date().getTime() + 60 * 60 * 1000), // expired token 1hour
+      tkn_description: `Successfully created token for user ${foundUser.us_email}`,
+      tkn_us_id: foundUser.us_id,
+      tkn_expired_on: new Date(new Date().getTime() + 60 * 60 * 1000), // expired token 1 hour
       tkn_is_active: true,
       tkn_created_at: new Date(),
       tkn_updated_at: new Date(),
     });
 
     // remove password from response
-    delete user.dataValues.us_password;
-    user.dataValues.token = loginToken;
+    delete foundUser.dataValues.us_password;
+    foundUser.dataValues.token = loginToken;
 
     // set cookie
     const options = {
@@ -147,11 +153,11 @@ const authLogin = async (req, res) => {
       expires: new Date(new Date().getTime() + 60 * 60 * 1000),
     };
 
-    return res.cookie("user", user, options).status(200).send({
+    return res.cookie("user", foundUser, options).status(200).send({
       status: "success",
       code: 200,
       message: "Login successfully",
-      data: user,
+      data: foundUser,
     });
   } catch (error) {
     return res.status(500).json({
@@ -165,32 +171,23 @@ const authLogin = async (req, res) => {
 const authLogout = async (req, res) => {
   try {
     if (req.cookies.user) {
-      const { token } = JSON.parse(req.cookies.user);
-
-      if (token) {
-        await token.update(
-          {
-            tkn_is_active: false,
+      const { us_id } = req.cookies.user;
+      await token.update(
+        { tkn_is_active: false },
+        {
+          where: {
+            tkn_us_id: us_id,
+            tkn_is_active: true,
           },
-          {
-            where: {
-              tkn_value: token,
-            },
-          }
-        );
-      }
+        }
+      );
+
+      return res.clearCookie("user").status(200).json({
+        status: "success",
+        code: 200,
+        message: "Logout successfully",
+      });
     }
-
-    // clear cookie
-    res.clearCookie("user", {
-      httpOnly: false,
-    });
-
-    return res.status(200).json({
-      status: "success",
-      code: 200,
-      message: "Logout successfully",
-    });
   } catch (error) {
     return res.status(500).json({
       status: "failed",

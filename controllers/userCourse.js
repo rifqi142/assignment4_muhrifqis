@@ -34,7 +34,19 @@ const createUserCourse = async (req, res) => {
 
 const getAllUserCourses = async (req, res) => {
   try {
-    const allUserCourses = await users_courses.findAll();
+    const allUserCourses = await users_courses.findAll({
+      include: [
+        {
+          association: "user",
+          attributes: {
+            exclude: ["us_password"],
+          },
+        },
+        {
+          association: "course",
+        },
+      ],
+    });
 
     if (!allUserCourses) {
       return res.status(404).json({
@@ -66,6 +78,17 @@ const getUserCourseById = async (req, res) => {
       where: {
         uc_id: id,
       },
+      include: [
+        {
+          association: "user",
+          attributes: {
+            exclude: ["us_password"],
+          },
+        },
+        {
+          association: "course",
+        },
+      ],
     });
 
     if (!userCourse) {

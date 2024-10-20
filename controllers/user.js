@@ -1,11 +1,57 @@
 // get all users, get user by id, update, delete, soft delete user
 require("module-alias/register");
 
-const { user } = require("@/models");
+const {
+  user,
+  users_courses,
+  courses,
+  courses_schedules,
+  schedules,
+} = require("@/models");
 
 const getAllUsers = async (req, res) => {
   try {
-    const allUsers = await user.findAll();
+    const allUsers = await user.findAll({
+      where: {
+        us_is_active: true,
+      },
+      attributes: [
+        "us_id",
+        "us_username",
+        "us_fullname",
+        "us_email",
+        "us_phone_number",
+        "us_is_active",
+      ],
+      include: [
+        {
+          model: users_courses,
+          as: "userCourses",
+          attributes: ["uc_id"],
+          include: [
+            {
+              model: courses,
+              as: "course",
+              attributes: ["cr_id", "cr_name", "cr_code", "cr_trainer"],
+              include: [
+                {
+                  model: courses_schedules,
+                  as: "courseSchedules",
+                  attributes: ["cs_id"],
+                  include: [
+                    {
+                      model: schedules,
+                      as: "schedule",
+                      attributes: ["sc_date", "sc_start_time", "sc_end_time"],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
     if (!allUsers) {
       return res.status(404).json({
         status: "failed",
@@ -13,6 +59,7 @@ const getAllUsers = async (req, res) => {
         message: "User not found",
       });
     }
+
     return res.status(200).json({
       status: "success get all users",
       code: 200,
@@ -30,22 +77,60 @@ const getAllUsers = async (req, res) => {
 const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await user.findOne({
+    const findUser = await user.findOne({
       where: {
-        id: id,
+        us_id: id,
       },
+      attributes: [
+        "us_id",
+        "us_username",
+        "us_fullname",
+        "us_email",
+        "us_phone_number",
+        "us_is_active",
+      ],
+      include: [
+        {
+          model: users_courses,
+          as: "userCourses",
+          attributes: ["uc_id"],
+          include: [
+            {
+              model: courses,
+              as: "course",
+              attributes: ["cr_id", "cr_name", "cr_code", "cr_trainer"],
+              include: [
+                {
+                  model: courses_schedules,
+                  as: "courseSchedules",
+                  attributes: ["cs_id"],
+                  include: [
+                    {
+                      model: schedules,
+                      as: "schedule",
+                      attributes: ["sc_date", "sc_start_time", "sc_end_time"],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
-    if (!user) {
+
+    if (!findUser) {
       return res.status(404).json({
         status: "failed",
         code: 404,
         message: "User not found",
       });
     }
+
     return res.status(200).json({
       status: "success get user by id",
       code: 200,
-      data: user,
+      data: findUser,
     });
   } catch (error) {
     res.status(500).json({
@@ -79,7 +164,7 @@ const updateUser = async (req, res) => {
 
     const updateUser = await user.findOne({
       where: {
-        cr_id: id,
+        us_id: id,
       },
     });
 
@@ -164,13 +249,13 @@ const softDeleteUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await user.findOne({
+    const deleteUser = await user.findOne({
       where: {
         us_id: id,
       },
     });
 
-    if (!user) {
+    if (!deleteUser) {
       return res.status(404).json({
         status: "failed",
         code: 404,
@@ -178,7 +263,7 @@ const deleteUser = async (req, res) => {
       });
     }
 
-    await user.destroy();
+    await deleteUser.destroy();
 
     return res.status(200).json({
       status: "success to delete user",

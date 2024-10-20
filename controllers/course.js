@@ -69,6 +69,7 @@ const createCourse = async (req, res) => {
       cr_name,
       cr_code,
       cr_description,
+      cr_trainer,
       cr_price,
       cr_duration,
       cr_category,
@@ -78,6 +79,7 @@ const createCourse = async (req, res) => {
       !cr_name ||
       !cr_code ||
       !cr_description ||
+      !cr_trainer ||
       !cr_price ||
       !cr_duration ||
       !cr_category
@@ -93,6 +95,7 @@ const createCourse = async (req, res) => {
       cr_name,
       cr_code,
       cr_description,
+      cr_trainer,
       cr_price,
       cr_duration,
       cr_category,

@@ -35,7 +35,18 @@ const createCourseSchedule = async (req, res) => {
 
 const getAllUserSchedules = async (req, res) => {
   try {
-    const allCourseSchedules = await courses_schedules.findAll();
+    const allCourseSchedules = await courses_schedules.findAll({
+      include: [
+        {
+          association: "course",
+          attributes: ["cr_id", "cr_name", "cr_code", "cr_trainer"],
+        },
+        {
+          association: "schedule",
+          attributes: ["sc_date", "sc_start_time", "sc_end_time"],
+        },
+      ],
+    });
 
     if (!allCourseSchedules) {
       return res.status(404).json({
@@ -67,6 +78,16 @@ const getUserScheduleById = async (req, res) => {
       where: {
         cs_id: id,
       },
+      include: [
+        {
+          association: "course",
+          attributes: ["cr_id", "cr_name", "cr_code", "cr_trainer"],
+        },
+        {
+          association: "schedule",
+          attributes: ["sc_date", "sc_start_time", "sc_end_time"],
+        },
+      ],
     });
 
     if (!courseSchedule) {

@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "cs_cr_id",
         as: "course",
       });
+      models.courses_schedules.belongsTo(models.schedules, {
+        foreignKey: "cs_sc_id",
+        as: "schedule",
+      });
     }
   }
   courses_schedules.init(
@@ -49,6 +53,9 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "courses_schedules",
       tableName: "courses_schedules",
+      timestamps: true,
+      createdAt: "cs_created_at",
+      updatedAt: "cs_updated_at",
     }
   );
   return courses_schedules;

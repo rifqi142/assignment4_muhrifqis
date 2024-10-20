@@ -11,22 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
 
       // A schedule can have many courses
-      // models.schedules.belongsToMany(models.courses, {
-      //   through: models.courses_schedules,
-      //   foreignKey: "cs_sc_id",
-      //   otherKey: "cs_cr_id",
-      //   as: "courses",
-      // });
-
-      // A schedule can have many courses
-      models.schedules.belongsTo(models.schedules, {
-        foreignKey: "cs_cr_id",
-        as: "schedules",
-      });
-
-      // A course can have many schedules
-      models.schedules.belongsTo(models.courses, {
+      models.schedules.belongsToMany(models.courses, {
+        through: models.courses_schedules,
         foreignKey: "cs_sc_id",
+        otherKey: "cs_cr_id",
         as: "courses",
       });
     }
@@ -71,6 +59,9 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "schedules",
       tableName: "schedules",
+      timestamps: true,
+      createdAt: "sc_created_at",
+      updatedAt: "sc_updated_at",
     }
   );
   return schedules;

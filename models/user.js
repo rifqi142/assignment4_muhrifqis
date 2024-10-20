@@ -1,23 +1,21 @@
-"use strict";
+"user strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class user extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       // define association here
 
-      // relasi many to many ke tabel courses
-      // relasi many to many ke tabel user
-      // satu user bisa mempunyai banyak course
+      // Relasi many-to-many ke tabel courses
       models.user.belongsToMany(models.courses, {
         through: models.users_courses,
         foreignKey: "uc_us_id",
         otherKey: "uc_cr_id",
         as: "enrolledCourses",
+      });
+
+      models.user.hasMany(models.users_courses, {
+        foreignKey: "uc_us_id",
+        as: "userCourses",
       });
     }
   }
@@ -72,6 +70,9 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "user",
       tableName: "users",
+      timestamps: true,
+      createdAt: "us_created_at",
+      updatedAt: "us_updated_at",
     }
   );
   return user;

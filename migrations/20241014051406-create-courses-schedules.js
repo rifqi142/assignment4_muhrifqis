@@ -40,8 +40,13 @@ module.exports = {
         defaultValue: Sequelize.NOW,
       },
     });
+    await queryInterface.addIndex("courses_schedules", ["cs_cr_id"]);
+    await queryInterface.addIndex("courses_schedules", ["cs_sc_id"]);
   },
   async down(queryInterface, Sequelize) {
+    await queryInterface.removeIndex("courses_schedules", ["cs_cr_id"]);
+    await queryInterface.removeIndex("courses_schedules", ["cs_sc_id"]);
+
     await queryInterface.dropTable("courses_schedules");
   },
 };

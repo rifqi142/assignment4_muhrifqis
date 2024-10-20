@@ -10,21 +10,20 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      // A course can have many students
+      // A course can have many users
       // relasi many to many ke tabel user
       models.courses.belongsToMany(models.user, {
         through: models.users_courses,
         foreignKey: "uc_cr_id",
         otherKey: "uc_us_id",
-        as: "students",
+        as: "users",
       });
 
       // A course can have many schedules
       // relasi one to many ke tabel schedules
-      models.courses.belongsToMany(models.schedules, {
-        through: models.courses_schedules,
-        foreignKey: "sc_cr_id",
-        as: "schedules",
+      models.courses.hasMany(models.courses_schedules, {
+        foreignKey: "cs_cr_id",
+        as: "courseSchedules",
       });
     }
   }
@@ -57,6 +56,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      cr_trainer: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       cr_category: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -81,6 +84,9 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "courses",
       tableName: "courses",
+      timestamps: true,
+      createdAt: "cr_created_at",
+      updatedAt: "cr_updated_at",
     }
   );
   return courses;

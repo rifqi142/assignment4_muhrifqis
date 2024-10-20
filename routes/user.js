@@ -21,7 +21,7 @@ router.get("/:id", getUserById);
 router.put("/:id", authBodyValidation, updateUser);
 
 // [SOFTDELETE] /soft-delete/:id
-router.put("/soft-delete/:id", softDeleteUser);
+router.delete("/soft-delete/:id", softDeleteUser);
 
 // [DELETE] /user/:id
 router.delete("/:id", deleteUser);

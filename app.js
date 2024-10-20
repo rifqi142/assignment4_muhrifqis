@@ -6,6 +6,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const port = process.env.PORT || 3000;
+const cookieParser = require("cookie-parser");
 
 const authRoutes = require("@/routes/auth");
 const courseRoutes = require("@/routes/course");
@@ -22,12 +23,14 @@ app.use(
   })
 );
 app.use(bodyParser.json());
+app.use(express.json());
+app.use(cookieParser());
 
 app.use("/auth", authRoutes);
 app.use("/course", courseRoutes);
 app.use("/schedule", scheduleRoutes);
-app.use("/user-course", userCoursesRoutes);
 app.use("/course-schedule", courseScheduleRoutes);
+app.use("/user-course", userCoursesRoutes);
 app.use("/user", userRoutes);
 
 app.get("/", (_, res) => {

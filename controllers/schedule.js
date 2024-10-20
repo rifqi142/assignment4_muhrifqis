@@ -31,12 +31,12 @@ const getAllSchedules = async (req, res) => {
 const getScheduleById = async (req, res) => {
   try {
     const { id } = req.params;
-    const schedules = await schedules.findOne({
+    const schedule = await schedules.findOne({
       where: {
-        id: id,
+        sc_id: id,
       },
     });
-    if (!schedules) {
+    if (!schedule) {
       return res.status(404).json({
         status: "failed",
         code: 404,
@@ -46,7 +46,7 @@ const getScheduleById = async (req, res) => {
     return res.status(200).json({
       status: "success get schedules by id",
       code: 200,
-      data: schedules,
+      data: schedule,
     });
   } catch (error) {
     return res.status(500).json({
@@ -105,7 +105,7 @@ const updateSchedule = async (req, res) => {
 
     const schedule = await schedules.findOne({
       where: {
-        id: id,
+        sc_id: id,
       },
     });
 
@@ -148,7 +148,7 @@ const softDeleteSchedule = async (req, res) => {
     const { id } = req.params;
     const schedule = await schedules.findOne({
       where: {
-        id: id,
+        sc_id: id,
       },
     });
 
@@ -184,7 +184,7 @@ const deleteSchedule = async (req, res) => {
     const { id } = req.params;
     const schedule = await schedules.findOne({
       where: {
-        id: id,
+        sc_id: id,
       },
     });
 

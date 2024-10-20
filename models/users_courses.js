@@ -39,11 +39,24 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      uc_created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
+      uc_updated_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
     },
     {
       sequelize,
       modelName: "users_courses",
       tableName: "users_courses",
+      timestamps: true,
+      createdAt: "uc_created_at",
+      updatedAt: "uc_updated_at",
     }
   );
   return users_courses;
